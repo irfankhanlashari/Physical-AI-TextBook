@@ -1,0 +1,111 @@
+# API Contracts: Physical AI Textbook
+
+## Overview
+This document defines the API contracts for the Physical AI textbook project. Since this is a static site, the "API" refers to the data interfaces and content structures used by the Docusaurus application.
+
+## Content API
+
+### Chapter Interface
+```typescript
+interface Chapter {
+  id: string;           // Unique identifier (e.g., "ch1", "ch2")
+  title: string;        // Chapter title
+  content: string;      // MDX content string
+  objectives: string[]; // Learning objectives
+  concepts: string[];   // Key concepts covered
+  codeExamples: CodeExample[];
+  assessments: Assessment[];
+  references: Reference[];
+  order: number;        // Chapter sequence (1-8)
+}
+
+interface CodeExample {
+  language: string;     // Programming language
+  code: string;         // The actual code snippet
+  description: string;  // Explanation of the code
+  purpose: string;      // Why this example is relevant
+}
+
+interface Assessment {
+  question: string;     // The actual question
+  type: string;         // multiple-choice, short-answer, coding exercise
+  difficulty: string;   // beginner, intermediate, advanced
+  answer?: string;      // For auto-gradable questions
+  explanation: string;  // Why the answer is correct
+}
+
+interface Reference {
+  title: string;        // Title of the reference
+  url: string;          // URL to the resource
+}
+```
+
+### Hardware Component Interface
+```typescript
+interface HardwareComponent {
+  name: string;         // Component name (e.g., "LiDAR Sensor")
+  type: string;         // Component type (sensor, actuator, etc.)
+  description: string;  // Detailed description
+  typicalCost: number;  // Cost in USD
+  useCase: string;      // How it's used in Physical AI
+  chapterId: string;    // Which chapter discusses this component
+}
+```
+
+## Navigation API
+
+### Sidebar Interface
+```typescript
+interface SidebarItem {
+  type: string;         // "category" or "doc"
+  label: string;        // Display name
+  to?: string;          // Relative path to MDX file
+  collapsed?: boolean;  // Whether section is collapsed by default
+  items?: SidebarItem[]; // Nested items for hierarchical structure
+}
+```
+
+## Content Generation API
+
+### Content Generation Request
+```typescript
+interface ContentGenerationRequest {
+  chapterId: string;    // Which chapter to generate
+  spec: string;         // Specification for the content
+  tools: string[];      // Tools to use (Spec-Kit Plus, Claude Code)
+  researchRequired: boolean; // Whether concurrent research is needed
+}
+```
+
+### Content Generation Response
+```typescript
+interface ContentGenerationResponse {
+  success: boolean;
+  content: string;      // Generated MDX content
+  codeExamples: CodeExample[];
+  references: Reference[];
+  status: string;       // draft, reviewed, published
+  errors?: string[];    // Any errors during generation
+}
+```
+
+## Validation API
+
+### Content Validation Request
+```typescript
+interface ContentValidationRequest {
+  content: string;      // MDX content to validate
+  chapterId: string;    // Which chapter this is for
+  validationRules: string[]; // Rules to apply
+}
+```
+
+### Content Validation Response
+```typescript
+interface ContentValidationResponse {
+  valid: boolean;
+  errors: string[];     // List of validation errors
+  warnings: string[];   // List of warnings
+  suggestions: string[]; // Suggestions for improvement
+}
+```

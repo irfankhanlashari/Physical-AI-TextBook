@@ -1,0 +1,441 @@
+---
+id: ch6-humanoid
+title: Chapter 6 - Humanoid Development
+sidebar_position: 7
+---
+
+# Chapter 6: Humanoid Development
+
+## Learning Objectives
+
+By the end of this chapter, you should be able to:
+
+- Understand the challenges and approaches in humanoid robotics
+- Identify key sensors and components for humanoid robots
+- Explain control systems and balance algorithms
+- Implement basic humanoid control systems
+- Evaluate humanoid robot capabilities and limitations
+
+## Introduction to Humanoid Robotics
+
+Humanoid robots are designed with human-like characteristics, including a torso, head, two arms, and two legs. These robots present unique challenges in control, balance, and interaction due to their complex kinematics and the need to operate in human-designed environments.
+
+Key aspects of humanoid robotics:
+- **Bipedal locomotion**: Walking on two legs like humans
+- **Human-like manipulation**: Using arms and hands similar to humans
+- **Social interaction**: Designed to interact naturally with humans
+- **Environment compatibility**: Operating in spaces designed for humans
+
+## Humanoid Robot Platforms
+
+### Research Platforms
+
+#### Boston Dynamics Atlas
+- 6'2" tall, 180 lbs
+- 28 hydraulic joints
+- Designed for outdoor and indoor operation
+- Advanced dynamic walking and running capabilities
+
+#### Honda ASIMO
+- 4'3" tall, 119 lbs
+- Electric motors for actuation
+- Advanced autonomous behavior
+- Human-robot interaction focus
+
+#### SoftBank NAO
+- 23 inches tall, 12 lbs
+- 25 degrees of freedom
+- Designed for research and education
+- Comprehensive SDK for development
+
+### Key Design Considerations
+
+#### Degrees of Freedom (DOF)
+The number of independent movements a humanoid robot can make:
+- **High DOF**: More flexibility but complex control
+- **Low DOF**: Easier control but limited movement
+- Typical humanoid robots have 20-40+ DOF
+
+#### Actuation Systems
+- **Electric motors**: Precise control, good for indoor applications
+- **Hydraulic systems**: High power-to-weight ratio, for dynamic movement
+- **Pneumatic systems**: Compliance and safety benefits
+- **Series elastic actuators**: Improved force control and safety
+
+## Sensor Systems for Humanoids
+
+### Balance and Orientation Sensors
+
+#### Inertial Measurement Units (IMUs)
+Critical for balance and orientation:
+- **Accelerometers**: Measure linear acceleration
+- **Gyroscopes**: Measure angular velocity
+- **Magnetometers**: Provide absolute orientation reference
+
+```python
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Imu
+from std_msgs.msg import Float64MultiArray
+
+
+class HumanoidBalanceController(Node):
+    def __init__(self):
+        super().__init__('humanoid_balance_controller')
+
+        # Subscribe to IMU data
+        self.imu_sub = self.create_subscription(
+            Imu,
+            '/imu/data',
+            self.imu_callback,
+            10
+        )
+
+        # Publishers for joint control
+        self.joint_cmd_pub = self.create_publisher(
+            Float64MultiArray,
+            '/joint_group_position_controller/commands',
+            10
+        )
+
+        # Balance control parameters
+        self.roll = 0.0
+        self.pitch = 0.0
+        self.yaw = 0.0
+        self.zmp_x = 0.0
+        self.zmp_y = 0.0
+
+    def imu_callback(self, msg):
+        # Extract orientation from IMU quaternion
+        import math
+        q = msg.orientation
+
+        # Convert quaternion to roll, pitch, yaw
+        sinr_cosp = 2 * (q.w * q.x + q.y * q.z)
+        cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y)
+        self.roll = math.atan2(sinr_cosp, cosr_cosp)
+
+        sinp = 2 * (q.w * q.y - q.z * q.x)
+        if abs(sinp) >= 1:
+            self.pitch = math.copysign(math.pi / 2, sinp)
+        else:
+            self.pitch = math.asin(sinp)
+
+        siny_cosp = 2 * (q.w * q.z + q.x * q.y)
+        cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
+        self.yaw = math.atan2(siny_cosp, cosy_cosp)
+
+        # Implement balance control based on IMU data
+        self.balance_correction()
+
+    def balance_correction(self):
+        # Simple balance correction based on orientation
+        if abs(self.roll) > 0.1:  # If tilted beyond 5.7 degrees
+            # Send corrective joint commands
+            cmd_msg = Float64MultiArray()
+            cmd_msg.data = [0.0] * 25  # Assuming 25 joints
+            # Adjust ankle joints to correct roll
+            # Left ankle adjustment
+            cmd_msg.data[10] = -self.roll * 0.5  # Ankle roll
+            # Right ankle adjustment
+            cmd_msg.data[15] = -self.roll * 0.5  # Ankle roll
+
+            self.joint_cmd_pub.publish(cmd_msg)
+```
+
+### Vision Systems
+
+#### Stereo Vision
+Humanoid robots often use stereo vision for depth perception:
+- Two cameras mimicking human eyes
+- Depth estimation through triangulation
+- Object recognition and scene understanding
+
+#### RGB-D Cameras
+- Color information (RGB)
+- Depth information (D)
+- Real-time 3D scene reconstruction
+- Human detection and tracking
+
+### Tactile Sensors
+
+#### Force/Torque Sensors
+- Located in joints and limbs
+- Measure interaction forces
+- Essential for safe manipulation
+- Balance and gait control
+
+#### Tactile Skin
+- Distributed tactile sensing
+- Human-like touch sensitivity
+- Grasp stability detection
+- Surface texture recognition
+
+## Control Systems and Algorithms
+
+### Balance Control
+
+#### Zero Moment Point (ZMP)
+The ZMP is a critical concept in humanoid balance:
+- Point where the sum of all moments equals zero
+- Must remain within support polygon for stability
+- Used in gait planning and balance control
+
+```python
+import numpy as np
+
+
+class ZMPController:
+    def __init__(self):
+        # Robot parameters
+        self.com_height = 0.8  # Center of mass height (m)
+        self.gravity = 9.81
+        self.omega = np.sqrt(self.gravity / self.com_height)
+
+        # Support polygon (simplified as rectangle)
+        self.foot_length = 0.2  # m
+        self.foot_width = 0.1   # m
+
+    def compute_zmp(self, com_pos, com_vel, com_acc):
+        """
+        Compute ZMP from center of mass information
+        ZMP_x = CoM_x - (CoM_height * CoM_acc_x) / gravity
+        ZMP_y = CoM_y - (CoM_height * CoM_acc_y) / gravity
+        """
+        zmp_x = com_pos[0] - (self.com_height * com_acc[0]) / self.gravity
+        zmp_y = com_pos[1] - (self.com_height * com_acc[1]) / self.gravity
+
+        return np.array([zmp_x, zmp_y, 0.0])
+
+    def check_stability(self, zmp):
+        """
+        Check if ZMP is within support polygon
+        """
+        # Simplified support polygon check
+        x_limit = self.foot_length / 2
+        y_limit = self.foot_width / 2
+
+        return (abs(zmp[0]) <= x_limit and abs(zmp[1]) <= y_limit)
+```
+
+#### Center of Mass (CoM) Control
+- Maintaining CoM within support base
+- Real-time CoM tracking and adjustment
+- Integration with ZMP control
+
+### Walking Pattern Generation
+
+#### Inverted Pendulum Model
+Simplified model for walking pattern generation:
+- Humanoid as inverted pendulum
+- Control CoM trajectory during walking
+- Generate stable walking patterns
+
+#### Footstep Planning
+- Determine optimal footstep locations
+- Consider obstacle avoidance
+- Maintain balance throughout gait
+
+```python
+class FootstepPlanner:
+    def __init__(self):
+        self.step_length = 0.3  # m
+        self.step_width = 0.2   # m
+        self.step_height = 0.05 # m (clearance)
+
+    def plan_footsteps(self, start_pos, goal_pos, step_length=None):
+        """
+        Plan sequence of footsteps from start to goal
+        """
+        if step_length is None:
+            step_length = self.step_length
+
+        # Calculate number of steps needed
+        distance = np.linalg.norm(goal_pos[:2] - start_pos[:2])
+        num_steps = int(np.ceil(distance / step_length))
+
+        footsteps = []
+        for i in range(num_steps):
+            # Interpolate between start and goal
+            ratio = (i + 1) / num_steps
+            step_pos = start_pos + (goal_pos - start_pos) * ratio
+
+            # Alternate between left and right foot
+            if i % 2 == 0:
+                # Add step width offset for right foot
+                step_pos[1] += self.step_width / 2
+            else:
+                # Add step width offset for left foot
+                step_pos[1] -= self.step_width / 2
+
+            footsteps.append(step_pos)
+
+        return footsteps
+```
+
+### Motion Planning
+
+#### Whole-Body Motion Planning
+- Coordinate all joints simultaneously
+- Consider balance and collision constraints
+- Optimize for smooth, natural movements
+
+#### Inverse Kinematics
+- Calculate joint angles for desired end-effector position
+- Handle redundancy in humanoid kinematics
+- Consider joint limits and constraints
+
+## Humanoid Manipulation
+
+### Arm Control
+- Multi-joint arm coordination
+- End-effector position control
+- Grasp planning and execution
+
+### Hand Design
+- Anthropomorphic hand design
+- Grasp stability and dexterity
+- Tactile feedback integration
+
+```python
+class HumanoidManipulator:
+    def __init__(self):
+        self.arm_joints = ['shoulder_pan', 'shoulder_lift',
+                          'elbow_flex', 'wrist_flex', 'wrist_roll']
+        self.gripper_joints = ['gripper_left', 'gripper_right']
+
+    def reach_target(self, target_pos, arm='right'):
+        """
+        Plan and execute reaching motion
+        """
+        # Calculate inverse kinematics for reaching
+        joint_angles = self.inverse_kinematics(target_pos, arm)
+
+        # Execute motion
+        self.move_arm_to_joints(joint_angles, arm)
+
+    def inverse_kinematics(self, target_pos, arm):
+        """
+        Compute inverse kinematics for target position
+        This is a simplified example - real implementation would be more complex
+        """
+        # Placeholder for complex IK computation
+        # In practice, this would use libraries like KDL, MoveIt, or custom solvers
+        return [0.0] * len(self.arm_joints)  # Return zero angles as placeholder
+```
+
+## Software Frameworks for Humanoid Development
+
+### ROS and ROS 2
+- Extensive humanoid robotics support
+- Standard message types for humanoid control
+- Integration with perception and planning packages
+
+### Specialized Frameworks
+
+#### Choreonoid
+- Multi-body dynamics simulator
+- Humanoid-specific simulation tools
+- Real-time control capabilities
+
+#### Webots
+- General-purpose robotics simulator
+- Humanoid robot models available
+- Physics-based simulation
+
+#### Gazebo
+- Integration with ROS/ROS 2
+- Physics simulation for humanoid robots
+- Sensor simulation capabilities
+
+## Challenges in Humanoid Development
+
+### Mechanical Challenges
+- **Weight distribution**: Balancing robot weight for stability
+- **Power consumption**: Managing energy for all actuators
+- **Durability**: Withstanding impacts and wear
+- **Safety**: Ensuring safe operation around humans
+
+### Control Challenges
+- **Real-time constraints**: Meeting timing requirements for balance
+- **Complex kinematics**: Managing many degrees of freedom
+- **Dynamic stability**: Maintaining balance during motion
+- **Adaptation**: Adjusting to different terrains and conditions
+
+### Cognitive Challenges
+- **Environmental understanding**: Perceiving and interpreting surroundings
+- **Task planning**: Breaking complex tasks into executable actions
+- **Human interaction**: Natural communication with humans
+- **Learning**: Improving performance over time
+
+## Applications of Humanoid Robots
+
+### Research and Development
+- Platform for testing algorithms
+- Human-robot interaction studies
+- Cognitive robotics research
+
+### Education and Healthcare
+- Assistive robotics
+- Physical therapy assistance
+- Educational tools
+
+### Service and Entertainment
+- Customer service applications
+- Entertainment and performance
+- Guided tours and assistance
+
+### Industrial and Commercial
+- Inspection and maintenance
+- Human-like manipulation tasks
+- Collaborative work with humans
+
+## Safety Considerations
+
+### Physical Safety
+- Emergency stop mechanisms
+- Collision detection and avoidance
+- Safe operation limits
+- Impact mitigation
+
+### Operational Safety
+- Failure mode analysis
+- Safe fallback behaviors
+- Human safety protocols
+- Environmental safety
+
+## Future Directions
+
+### Advanced Materials
+- Lighter, stronger materials for construction
+- Artificial muscles for more natural movement
+- Flexible electronics for better integration
+
+### AI Integration
+- Learning from human demonstration
+- Adaptive behavior
+- Improved human-robot interaction
+- Autonomous skill acquisition
+
+### Commercial Applications
+- Elderly care assistance
+- Industrial collaboration
+- Service industry applications
+- Personal robotics
+
+## Key Concepts Summary
+
+- Humanoid robots present unique challenges in balance, control, and interaction
+- Sensor systems including IMUs, vision, and tactile sensors are critical for operation
+- ZMP and CoM control are fundamental to humanoid balance
+- Walking pattern generation uses inverted pendulum models
+- Motion planning must coordinate many degrees of freedom
+- Safety is paramount in humanoid robot design and operation
+- Applications span research, education, service, and commercial domains
+
+## References
+
+- [Humanoid Robotics Research](https://www.cs.cmu.edu/~hurobotics/)
+- [ROS Humanoid Packages](http://wiki.ros.org/Humanoid)
+- [IEEE Humanoid Robotics Conference](https://ieeexplore.ieee.org/xpl/conhome/1041421/all-volumes)
+- [Humanoid Robot Standards](https://www.iso.org/standard/62766.html)

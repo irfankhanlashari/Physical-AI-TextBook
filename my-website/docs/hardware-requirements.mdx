@@ -1,0 +1,311 @@
+---
+id: hardware-requirements
+title: Hardware Requirements
+sidebar_position: 12
+---
+
+# Hardware Requirements for Physical AI Systems
+
+## Overview
+
+This document outlines the hardware components commonly used in Physical AI applications, including robotics, perception systems, and AI accelerators. The requirements vary significantly based on the specific application, performance needs, and deployment environment.
+
+## Computing Platforms
+
+### Edge AI Computing
+
+#### NVIDIA Jetson Series
+| Model | GPU | CPU | Memory | Power | Use Case |
+|-------|-----|-----|--------|-------|----------|
+| Jetson Nano | 128-core Maxwell | Quad-core ARM A57 | 4GB LPDDR4 | 10W | Entry-level AI |
+| Jetson TX2 | 256-core Pascal | Dual Denver 2 + Quad ARM A57 | 8GB LPDDR4 | 15W | Mobile robotics |
+| Jetson Xavier NX | 384-core Volta | Hex-core ARM Carmel | 8GB LPDDR4 | 15W | Advanced robotics |
+| Jetson AGX Orin | 2048-core Ada Lovelace | 12-core ARM Hercules | 32GB LPDDR5 | 60W | High-performance AI |
+
+#### Other Edge Platforms
+- **Intel Movidius Neural Compute Stick**: USB-based AI acceleration
+- **Google Coral Edge TPU**: TensorFlow Lite optimized inference
+- **Xilinx Zynq SoC**: FPGA-based AI acceleration
+- **Qualcomm RB3 Gen 2**: Robotics-focused platform
+
+### Cloud Computing
+
+#### GPU Instances
+- **NVIDIA A100**: High-performance training and inference
+- **NVIDIA V100**: Established training platform
+- **NVIDIA T4**: Efficient inference platform
+- **AMD MI250X**: Alternative to NVIDIA GPUs
+
+## Sensors
+
+### Vision Sensors
+
+#### Cameras
+- **RGB Cameras**: Standard visual input
+  - Resolution: 720p to 4K
+  - Frame rate: 30-120 FPS
+  - Interface: USB 3.0, GigE, MIPI CSI-2
+
+- **RGB-D Cameras**:
+  - Intel RealSense D435: 1280×720 depth resolution
+  - Microsoft Kinect Azure: Advanced depth sensing
+  - Stereolabs ZED: Stereoscopic vision
+
+#### LiDAR Sensors
+| Model | Range | Accuracy | FOV | Price Range | Use Case |
+|-------|-------|----------|-----|-------------|----------|
+| Velodyne Puck | 100m | 2cm | 360° H × 30° V | $8,000-$12,000 | Outdoor navigation |
+| Ouster OS1 | 120m | 3cm | 360° H × 30° V | $8,000-$10,000 | Mapping and navigation |
+| Livox Mid-360 | 260m | 3cm | 360° H × 90° V | $1,500-$2,000 | Cost-effective solution |
+| Slamtec Tim561 | 25m | 2cm | 270° H × 3.7° V | $3,000-$4,000 | Indoor applications |
+
+### Inertial Sensors
+
+#### IMUs (Inertial Measurement Units)
+- **Bosch BNO055**: Integrated sensor with attitude estimation
+- **ST LSM6DSOX**: 6-axis IMU with AI processing
+- **Analog Devices ADIS16470**: High-performance tactical-grade IMU
+- **VectorNav VN-100**: High-precision attitude reference system
+
+#### Gyroscopes and Accelerometers
+- **Analog Devices ADXRS453**: High-performance MEMS gyroscope
+- **TDK InvenSense ICM-20689**: 6-axis MEMS motion tracking
+
+### Tactile Sensors
+
+#### Force/Torque Sensors
+- **ATI Gamma Series**: Multi-axis force/torque sensors
+- **Robotiq FT300**: Collaborative robot force/torque sensor
+- **Wacoh-Tech SA-100**: High-precision force sensor
+
+#### Tactile Skin
+- **BioTAC**: Biomimetic tactile sensor
+- **GelSight**: Vision-based tactile sensing
+- **Digit**: Low-cost tactile sensor
+
+## Actuators
+
+### Motors
+
+#### Servo Motors
+- **Dynamixel Series**: High-precision robotic actuators
+  - AX-12A: Basic servo with feedback
+  - XL430-W250: Smart servo with position/velocity control
+  - MX-64AR: High-torque servo with feedback
+
+#### Brushless DC Motors
+- **Maxon EC-i Series**: Ironless winding motors
+- **Oriental Motor AR Series**: Advanced servo motors
+- **Teknic ClearPath**: Integrated servo solutions
+
+#### Stepper Motors
+- **Oriental Motor PKP Series**: Precision stepper motors
+- **Applied Motion HTF Series**: Hybrid servo/stepper
+
+### Grippers
+
+#### Parallel Jaw Grippers
+- **Robotiq 2F-85**: Adaptive 2-finger gripper
+- **OnRobot RG2/6**: Adaptive grippers with various sizes
+- **Schunk EGP Series**: Electric gripper platforms
+
+#### Specialized Grippers
+- **Soft Robotics mGrip**: Soft actuated grippers
+- **SCHUNK Co-act Gripper**: Human-robot collaboration gripper
+- **Electro permanent magnetic grippers**: For ferromagnetic objects
+
+## Communication and Networking
+
+### Wireless Communication
+- **Wi-Fi 6/6E**: High-bandwidth communication
+- **5G**: Low-latency, high-reliability communication
+- **Bluetooth 5.x**: Short-range, low-power communication
+- **Zigbee**: Mesh networking for sensor networks
+
+### Wired Communication
+- **Ethernet**: High-speed, reliable communication
+- **CAN Bus**: Robust automotive/industrial communication
+- **RS-485**: Long-distance serial communication
+- **USB 3.0/3.1**: High-speed peripheral communication
+
+## Robotic Platforms
+
+### Mobile Robots
+
+#### Research Platforms
+- **TurtleBot 4**: ROS 2 compatible mobile robot
+- **Clearpath Husky**: Outdoor research platform
+- **Fetch Robotics Mobile Manipulator**: Research and commercial use
+
+#### Commercial Platforms
+- **Amazon Scout**: Delivery robot platform
+- **Starship Technologies Delivery Robot**: Last-mile delivery
+- **Aethon TUG**: Healthcare logistics robot
+
+### Manipulation Robots
+
+#### Collaborative Robots (Cobots)
+| Brand | Model | Payload | Reach | Price Range | Features |
+|-------|-------|---------|-------|-------------|----------|
+| Universal Robots | UR3e | 3kg | 500mm | $20,000-$25,000 | Lightweight, precise |
+| Universal Robots | UR5e | 5kg | 850mm | $35,000-$40,000 | Balanced performance |
+| Universal Robots | UR10e | 10kg | 1300mm | $50,000-$60,000 | Heavy-duty tasks |
+| ABB | YuMi | 0.5kg × 2 | 500mm | $100,000-$120,000 | Dual-arm precision |
+| Franka Emika | Panda | 3kg | 800mm | $40,000-$50,000 | Advanced control |
+
+#### Industrial Robots
+- **KUKA KR Series**: Heavy-duty industrial robots
+- **ABB IRB Series**: Versatile industrial robots
+- **Fanuc M Series**: High-speed pick-and-place robots
+
+### Humanoid Robots
+
+#### Research Platforms
+- **Boston Dynamics Atlas**: High-mobility humanoid
+- **Honda ASIMO**: Advanced bipedal robot
+- **SoftBank NAO**: Humanoid for research and education
+- **Aldebaran Pepper**: Humanoid for human interaction
+
+## Simulation Hardware
+
+### High-Performance Computing for Simulation
+- **Multi-core CPUs**: For physics simulation
+- **High-end GPUs**: For rendering and physics acceleration
+- **Large RAM**: For complex scene simulation
+- **SSD Storage**: For fast asset loading
+
+## Power Systems
+
+### Batteries
+- **LiPo (Lithium Polymer)**: High power density, common in mobile robots
+- **LiFePO4 (Lithium Iron Phosphate)**: Safer, longer cycle life
+- **SLA (Sealed Lead Acid)**: Lower cost, heavier
+
+### Power Management
+- **DC-DC Converters**: Voltage regulation
+- **Power Distribution Boards**: Efficient power routing
+- **Battery Management Systems**: Safe charging/discharging
+
+## Development and Prototyping
+
+### Development Kits
+- **Arduino**: Basic prototyping platform
+- **Raspberry Pi**: Single-board computer for robotics
+- **NVIDIA Jetson Development Kits**: AI-focused development
+- **Robot Operating System (ROS) Compatible Hardware**: For development
+
+### Prototyping Components
+- **Breadboards**: Circuit prototyping
+- **Jumper Wires**: Electrical connections
+- **Sensors and Actuators**: For testing
+- **3D Printing**: Custom mechanical parts
+
+## Cost Considerations
+
+### Budget Categories
+
+#### Low Budget ($1,000 - $5,000)
+- Raspberry Pi-based systems
+- Basic sensors and actuators
+- Simple mobile platforms
+- Educational robot kits
+
+#### Mid-Range ($5,000 - $25,000)
+- NVIDIA Jetson platforms
+- Quality sensors (LiDAR, cameras)
+- Collaborative robot arms
+- Professional mobile bases
+
+#### High-End ($25,000+)
+- Advanced humanoid robots
+- High-performance computing
+- Precision sensors and actuators
+- Specialized platforms
+
+### Cost Optimization Strategies
+- Use simulation for initial development
+- Leverage open-source software
+- Consider refurbished or academic pricing
+- Plan for scalability and reuse
+
+## Integration Considerations
+
+### Mechanical Integration
+- Mounting systems and brackets
+- Cable management
+- Heat dissipation
+- Protection from environmental factors
+
+### Electrical Integration
+- Power distribution planning
+- Signal integrity
+- Electromagnetic compatibility
+- Safety systems
+
+### Software Integration
+- Communication protocols
+- Real-time requirements
+- Middleware compatibility (ROS/ROS 2)
+- API availability
+
+## Future-Proofing
+
+### Technology Trends
+- Edge AI acceleration
+- Wireless power transfer
+- Advanced materials for actuators
+- Neuromorphic computing
+
+### Scalability Considerations
+- Modular design
+- Standard interfaces
+- Upgrade paths
+- Compatibility with emerging standards
+
+## Selection Guidelines
+
+### Application-Based Selection
+1. **Identify specific requirements**
+2. **Consider environmental constraints**
+3. **Evaluate computational needs**
+4. **Assess power and space limitations**
+5. **Plan for integration complexity**
+
+### Evaluation Criteria
+- Performance specifications
+- Reliability and support
+- Cost-effectiveness
+- Integration compatibility
+- Future upgrade paths
+
+## Maintenance and Support
+
+### Regular Maintenance
+- Calibration of sensors
+- Firmware updates
+- Mechanical inspection
+- Battery replacement
+
+### Support Considerations
+- Manufacturer support availability
+- Community resources
+- Documentation quality
+- Replacement part availability
+
+## Key Concepts Summary
+
+- Hardware selection should align with specific application requirements
+- Edge computing platforms enable real-time AI processing on robots
+- Sensor selection impacts perception capabilities significantly
+- Actuator choice affects robot mobility and manipulation abilities
+- Communication systems ensure reliable operation
+- Cost optimization requires balancing performance with budget constraints
+- Future-proofing involves considering technology trends and scalability
+- Proper integration planning prevents compatibility issues
+
+## References
+
+- [NVIDIA Jetson Hardware](https://developer.nvidia.com/embedded/jetson-developer-kits)
+- [Robot Operating System Hardware Compatibility](https://wiki.ros.org/Robots)
+- [Open Source Robotics Hardware](https://www.osrfoundation.org/)
+- [Industrial Robot Specifications](https://www.robotics.org/)
