@@ -26,7 +26,10 @@ const config: Config = {
   projectName: 'physical-ai-textbook', // Usually your repo name.
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn', // Keeping this temporarily until we find the right migration path
+  markdown: {
+    mermaid: true,
+  },
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
