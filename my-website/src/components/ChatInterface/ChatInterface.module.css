@@ -1,0 +1,201 @@
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  background-color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  position: relative; /* Ensure proper positioning context */
+}
+
+.chatHeader {
+  background-color: #10b981; /* Emerald green */
+  color: white;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatHeader h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.messagesContainer {
+  flex: 1 1 auto;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #f0f2f5;
+  min-height: 0; /* Enable flex item scrolling */
+}
+
+.message {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.user {
+  align-self: flex-end;
+  background-color: #d9fdd3; /* WhatsApp user message color */
+  border-bottom-right-radius: 4px;
+  color: #333; /* Darker text color for better visibility */
+}
+
+.message.assistant {
+  align-self: flex-start;
+  background-color: white;
+  border-bottom-left-radius: 4px;
+  color: #333; /* Darker text color for better visibility */
+}
+
+.messageContent {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.sources {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #ddd;
+  font-size: 0.85em;
+}
+
+.source {
+  margin: 4px 0;
+  padding: 4px;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.timestamp {
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.inputForm {
+  display: flex;
+  padding: 12px;
+  background-color: white;
+  border-top: 1px solid #e0e0e0;
+  flex-shrink: 0; /* Prevent input form from shrinking */
+  margin-top: auto; /* Push to bottom */
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #10b981;
+}
+
+.languageSelector {
+  background-color: #059669; /* Darker green for more contrast */
+  color: white;
+  border: 1px solid #047857;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.languageSelector option {
+  background-color: #059669;
+  color: white;
+}
+
+.languageSelector:focus {
+  outline: none;
+  border-color: white;
+}
+
+.sendButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: #059669; /* Darker green to match language selector */
+  color: white;
+  margin-left: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.sendButton:hover:not(:disabled) {
+  background-color: #047857; /* Even darker green on hover */
+}
+
+.sendButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.typingIndicator {
+  font-style: italic;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Scrollbar styling */
+.messagesContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messagesContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

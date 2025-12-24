@@ -1,0 +1,295 @@
+.floatingChat {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.textSelectionPopup {
+  position: fixed;
+  z-index: 1001;
+  transform: translate(-50%, -100%);
+  display: flex;
+  gap: 4px;
+  background: none;
+  border: none;
+  pointer-events: none;
+}
+
+.textSelectionPopup button {
+  pointer-events: auto;
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: none;
+  background-color: #10b981; /* Emerald green like WhatsApp */
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.textSelectionPopup button:hover {
+  background-color: #059669; /* Darker green on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.floatingChatButton {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #10b981; /* Emerald green like WhatsApp */
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.floatingChatButton:hover {
+  background-color: #059669; /* Darker green on hover */
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.floatingChatButton:focus {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
+}
+
+.floatingChatContainer {
+  width: 350px;
+  height: 500px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chatHeader {
+  background-color: #10b981; /* Emerald green */
+  color: white;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatHeader h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.languageSelector {
+  background-color: #059669; /* Darker green for more contrast */
+  color: white;
+  border: 1px solid #047857;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.languageSelector option {
+  background-color: #059669;
+  color: white;
+}
+
+.languageSelector:focus {
+  outline: none;
+  border-color: white;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.messagesContainer {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #f0f2f5;
+}
+
+.message {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.user {
+  align-self: flex-end;
+  background-color: #d9fdd3; /* WhatsApp user message color */
+  border-bottom-right-radius: 4px;
+  color: #333; /* Darker text color for better visibility */
+}
+
+.message.assistant {
+  align-self: flex-start;
+  background-color: white;
+  border-bottom-left-radius: 4px;
+  color: #333; /* Darker text color for better visibility */
+}
+
+.messageContent {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.timestamp {
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.typingIndicator {
+  font-style: italic;
+  color: #666;
+  font-size: 14px;
+}
+
+.inputForm {
+  display: flex;
+  padding: 12px;
+  background-color: white;
+  border-top: 1px solid #e0e0e0;
+}
+
+.input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #10b981;
+}
+
+.sendButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: #059669; /* Darker green to match language selector */
+  color: white;
+  margin-left: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.sendButton:hover:not(:disabled) {
+  background-color: #047857; /* Even darker green on hover */
+}
+
+.sendButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Scrollbar styling */
+.messagesContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messagesContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .floatingChatContainer {
+    width: 300px;
+    height: 400px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .message {
+    max-width: 90%;
+  }
+
+  .textSelectionPopup button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
